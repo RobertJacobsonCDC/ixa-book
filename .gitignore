@@ -1,0 +1,15 @@
+## Project Specific ##
+book
+models/basic_infection
+
+## IDEs ##
+**/.vscode
+**/.idea
+**/.obsidian
+
+## Rust ##
+**/target
+**/Cargo.lock
+
+## macOS ##
+**/.DS_Store
