@@ -5,7 +5,4 @@ multilingual = false
 src = "src"
 title = "The Ixa Book"
 
-[preprocessor.toc]
-command = "mdbook-toc"
-
 [preprocessor.callouts]

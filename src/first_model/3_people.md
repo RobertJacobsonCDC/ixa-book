@@ -1,4 +1,4 @@
-# 1.2: The People Module
+# The People Module
 In Ixa we organize our models into *modules* each of which is responsible for a single aspect of the model.
 
 > [!INFO] Modules
@@ -6,7 +6,7 @@ In Ixa we organize our models into *modules* each of which is responsible for a 
 
 Ixa is a framework for developing *agent*-based models. In most of our models, the agents will represent people. So let's create a module that is responsible for people and their properties—the data that is attached to each person. Create a new file in the `src` directory called `people.rs`.
 
-## A `PersonProperty`
+## `PersonProperty`
 
 ```rust
 {{#include ../../models/disease_model/src/people.rs:5:10}}
@@ -71,7 +71,19 @@ Having "magic numbers" embedded in your code, such as the constant `1000` here r
 Let's revisit `src/main.rs`:
 ```rust
 // main.rs
-{{#include ../../models/disease_model/src/main.rs}}
+mod people;
+
+use ixa::Context;
+
+static POPULATION: u64 = 1000;
+
+fn main() {
+	let mut context = Context::new();
+	people::init(&mut context);
+	context.execute();
+	
+	println!("Simulation finished executing");
+}
 ```
 1. Your IDE might have added the `mod people;` line for you. If not, add it now. It tells the compiler that the `people` module is attached to the `main` module (that is, `main.rs`).
 2. We also need to declare our static constant for the total number of people.

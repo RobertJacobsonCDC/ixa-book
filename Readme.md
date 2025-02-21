@@ -2,11 +2,10 @@
 
 ## Prerequisits
 
-You need mdBook and the `mdbook-toc` and mdbook-callouts plugins.
+You need mdBook and the `mdbook-callouts` plugin.
 
 ```bash
 cargo install mdbook
-cargo install mdbook-toc
 cargo install mdbook-callouts
 ```
 
@@ -31,3 +30,4 @@ mdbook serve --open
 ```
 
 > The `serve` command watches the book’s `src` directory for changes, rebuilding the book and refreshing clients for each change; this includes re-creating deleted files still mentioned in `SUMMARY.md`! A websocket connection is used to trigger the client-side refresh.
+

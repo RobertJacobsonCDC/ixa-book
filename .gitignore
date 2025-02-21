@@ -6,6 +6,7 @@ models/basic_infection
 **/.vscode
 **/.idea
 **/.obsidian
+**/.smart-env
 
 ## Rust ##
 **/target
