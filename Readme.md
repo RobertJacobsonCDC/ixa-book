@@ -1,3 +1,7 @@
+The contents of this repo has been moved into [Ixa](https://github.com/CDCgov/ixa) ([draft PR](https://github.com/CDCgov/ixa/pull/241)).
+
+---
+
 # The Ixa Book
 
 ## Prerequisits
