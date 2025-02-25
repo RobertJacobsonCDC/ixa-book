@@ -54,19 +54,11 @@ pub fn init(context: &mut Context) {
 }
 ```
 The `context.add_person()` method call might look a little odd, because we are not giving `context` any data to insert, but that is because our one and only `PersonProperty` was defined to have a default value of `InfectionStatusValue::S` (susceptible)—so `context.add_person()` doesn't need any information to create a new person. Another odd thing is the `.expect("failed to add person")` method call. In more complicated scenarios adding a person can fail. We can intercept that failure if we wanted, but in this simple case we will just let the program crash with a message about the reason: "failed to add person".
-
+## Constants
 Having "magic numbers" embedded in your code, such as the constant `1000` here representing the total number of people in our model, is ***bad practice***. What if we want to change this value later? Will we even be able to find it in all of our source code? Ixa has a formal mechanism for managing these kinds of model parameters, but for now we will just define a "static constant" near the top of `src/main.rs` named `POPULATION` and replace the literal `1000` with `POPULATION`:
 ```rust
 {{#include ../../models/disease_model/src/people.rs:18:24}}
 ```
-
-> [!INFO] Logging
-> The trace! logging macro allows us to print messages to the console, but it’s much more powerful than a simple print statement. With log messages, you can:
-> - Turn log messages on and off as needed.
-> - Enable only messages with a specified priority (for example, only warnings or higher).
-> - Filter messages to show only those emitted from a specific module, like our `people` module.
->
-> See the logging documentation for more details.
 
 Let's revisit `src/main.rs`:
 ```rust
@@ -81,17 +73,16 @@ fn main() {
 	let mut context = Context::new();
 	people::init(&mut context);
 	context.execute();
-	
+
 	println!("Simulation finished executing");
 }
 ```
 1. Your IDE might have added the `mod people;` line for you. If not, add it now. It tells the compiler that the `people` module is attached to the `main` module (that is, `main.rs`).
 2. We also need to declare our static constant for the total number of people.
 3. We need to initialize the people module.
-
+## Imports
 Turning back to `src/people.rs`, your IDE might have been complaining to you about not being able to find things "in this scope"—or, if you are lucky, your IDE was smart enough to import the symbols you need at the top of the file automatically. The issue is that the compiler needs to know where externally defined items are coming from, so we need to have `use` statements at the top of the file to import those items. Here is the complete `src/people.rs` file:
 ```rust
 //people.rs
 {{#include ../../models/disease_model/src/people.rs}}
 ```
-

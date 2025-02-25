@@ -39,7 +39,7 @@ The `Cargo.toml` file stores information about your project, including metadata 
 # Cargo.toml
 {{#include ../../models/disease_model/Cargo.toml}}
 ```
-We also specify our dependencies. In this case, I am telling Cargo to use the version of the Ixa library located on my computer at a particular path. If you are using a version of Ixa from the Crates.io registry, you need only specify the version number:
+We also specify our dependencies. In this case, I am telling Cargo to use the version of the Ixa library located on my computer at a particular path. If you are using a version of Ixa from the Crates.io registry, which is recommended, you need only specify the version number:
 ```toml
 [dependencies]
 ixa = "0.1.0"
@@ -48,21 +48,63 @@ We also depend on the `serde` library and it's "derive" feature and the `rand_di
 ## Executing the Ixa model
 We are almost ready to execute our first model. Edit `src/main.rs` to look like this:
 ```rust
-use ixa::Context;
-
-fn main() {
-    let mut context = Context::new();
-    context.execute();
-
-    info!("Simulation finished executing");
+use ixa::{error, info, run_with_args, trace, Context};  
+  
+fn main() {  
+    let result =  
+        run_with_args(|_context: &mut Context, _args, _| {  
+            trace!("Initializing disease_model");  
+            Ok(())  
+        });  
+  
+    match result {  
+        Ok(_) => {  
+            info!("Simulation finished executing");  
+        }  
+        Err(e) => {  
+            error!("Simulation exited with error: {}", e);  
+        }  
+    }  
 }
 ```
-The first line says we want to use the `Context` type from the `ixa` library. A `Context` keeps track of the state of the world for our model and is the primary way code interacts with anything in the running model. The `mut` keyword stands for *mutable*. The first line of the `main()` function says we are creating a new variable named `context` that we want to be allowed to modify if we wish, and we are storing a new instance of `Context` in the variable. Calling the `execute()` method on `context` executes the model. Of course, our model doesn't actually *do* anything or even contain any data, so `context.execute()` checks that there is no work to do and immediately returns.
+Don't let this code intimidate you—it's really quite simple. The first line says we want to use symbols from the `ixa` library in the code that follows.  In `main()`, the first thing we do is call  `run_with_args()`. The `run_with_args()` function takes as an argument a closure inside which we can do additional setup before the simulation is kicked off if necessary. The only "setup" we do is log a `trace!` message that we are initializing the model.
+
+> [!INFO] Closures
+>  A *closure* is a small, self-contained block of code that can be passed around and executed later. It can capture and use variables from its surrounding environment, which makes it useful for things like callbacks, event handlers, or any situation where you want to define some logic on the fly and run it at a later time. In simple terms, a closure is like a mini anonymous function.
+
+The `run_with_args()` function does the following:
+1. It sets up a `Context` object for us, parsing and applying any command line arguments and initializing subsystems accordingly. A `Context` keeps track of the state of the world for our model and is the primary way code interacts with anything in the running model. 
+2. It executes our closure, passing it a *mutable reference* to `context` so we can do any additional setup.
+3. Finally, it kicks off the simulation by executing `context.execute()`. Of course, our model doesn't actually do anything or even contain any data, so `context.execute()` checks that there is no work to do and immediately returns. 
+
+If there is an error at any stage, `run_with_args()` will return an error result. The Rust compiler will complain if we do not handle the returned result, either by checking for the error or explicitly opting out of the check, which encourages us to do the responsible thing: `match result` checks for the error.
 
 We can build and run our model from the command line using Cargo:
-
 ```bash
 cargo run
 ```
+## Command line arguments
+The model doesn't do anything yet—it doesn't even emit the log messages we included. We can turn those on to see what is happening inside our model during development with the following command line argument:
+```bash
+cargo run -- --log-level=trace
+```
+This turns on messages emitted by Ixa itself, too. If you only want to see messages emitted by `disease_model`, you can specify the module in addition to the log level:
+```bash
+cargo run -- --log-level=disease_model:trace
+```
+
+> [!INFO] Logging
+> The `trace!`, `info!`, and `error!` logging macros allow us to print messages to the console, but they are much more powerful than a simple print statement. With log messages, you can:
+> - Turn log messages on and off as needed.
+> - Enable only messages with a specified priority (for example, only warnings or higher).
+> - Filter messages to show only those emitted from a specific module, like the `people` module we write in the next section.
+>
+> See the logging documentation for more details.
+
+> [!INFO] Command Line Arguments
+> The `run_with_args()` function takes care of handling any command line arguments for us, which is why we don't just create a `Context` object and call `context.execute()` ourselves. There are many arguments we can pass to our model that affects what is output and where, debugging options, configuration input, and so forth.
+> 
+> See the command line documentation for more details.
+
 
 In the next section we will add people to our model.

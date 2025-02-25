@@ -1,16 +1,29 @@
 mod people;
 mod transmission_manager;
+mod infection_manager;
 
-use ixa::Context;
+use ixa::{error, info, run_with_args, Context};
 
-static POPULATION: u64 = 1000;
+static POPULATION: u64 = 10;
 static FORCE_OF_INFECTION: f64 = 0.1;
-static MAX_TIME: f64 = 300.0;
+static MAX_TIME: f64 = 30.0;
+static INFECTION_DURATION: f64 = 10.0;
 
 fn main() {
-    let mut context = Context::new();
-    people::init(&mut context);
-    context.execute();
+    let result =
+        run_with_args(|context: &mut Context, _args, _| {
+            people::init(context);
+            transmission_manager::init(context);
+            infection_manager::init(context);
+            Ok(())
+        });
 
-    println!("Simulation finished executing");
+    match result {
+        Ok(_) => {
+            info!("Simulation finished executing");
+        }
+        Err(e) => {
+            error!("Simulation exited with error: {}", e);
+        }
+    }
 }

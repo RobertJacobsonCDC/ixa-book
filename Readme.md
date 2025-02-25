@@ -9,6 +9,12 @@ cargo install mdbook
 cargo install mdbook-callouts
 ```
 
+Optional but recommended, the `mdbook-inline-highlighting` plugin.
+
+```bash
+cargo install mdbook-inline-highlighting
+```
+
 ## Building
 
 To build without opening it:
@@ -30,4 +36,3 @@ mdbook serve --open
 ```
 
 > The `serve` command watches the book’s `src` directory for changes, rebuilding the book and refreshing clients for each change; this includes re-creating deleted files still mentioned in `SUMMARY.md`! A websocket connection is used to trigger the client-side refresh.
-
